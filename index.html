@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Joshy's Easter Egg Hunt</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- START SCREEN -->
+    <div id="start-screen" class="screen active">
+        <h1 class="title">&#x1F430;<br>Joshy's Easter<br>Egg Hunt!<br>&#x1F95A;</h1>
+        <div class="photo-frame">
+            <img src="joshy.jpg" alt="Joshy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="photo-fallback">&#x1F430;</div>
+        </div>
+        <p class="subtitle">Find all the eggs in the maze!</p>
+        <button id="start-btn" class="btn-start">Let's Go! &#x1F423;</button>
+    </div>
+
+    <!-- GAME SCREEN -->
+    <div id="game-screen" class="screen">
+        <div id="letter-bar"></div>
+        <div id="maze-wrapper">
+            <div id="maze"></div>
+            <div id="player">&#x1F430;</div>
+        </div>
+        <div id="egg-count"></div>
+        <div id="dpad">
+            <div class="dpad-row">
+                <button class="dpad-btn" data-dr="-1" data-dc="0">&#x2B06;&#xFE0F;</button>
+            </div>
+            <div class="dpad-row">
+                <button class="dpad-btn" data-dr="0" data-dc="-1">&#x2B05;&#xFE0F;</button>
+                <div class="dpad-spacer"></div>
+                <button class="dpad-btn" data-dr="0" data-dc="1">&#x27A1;&#xFE0F;</button>
+            </div>
+            <div class="dpad-row">
+                <button class="dpad-btn" data-dr="1" data-dc="0">&#x2B07;&#xFE0F;</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- WIN SCREEN -->
+    <div id="win-screen" class="screen">
+        <div id="confetti"></div>
+        <div class="win-content">
+            <h1 class="win-title">&#x1F389; Yay Joshy! &#x1F389;</h1>
+            <div class="photo-frame">
+                <img src="joshy.jpg" alt="Joshy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div class="photo-fallback">&#x2B50;</div>
+            </div>
+            <div id="win-word" class="win-word"></div>
+            <div id="clue-text" class="clue-text"></div>
+            <p class="win-emoji">&#x1F430;&#x1F95A;&#x1F423;&#x1F338;&#x1F955;</p>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>

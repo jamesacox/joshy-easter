@@ -1,0 +1,382 @@
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --sky: #87CEEB;
+    --grass: #2d8a4e;
+    --grass-dark: #1e6b38;
+    --path: #f5deb3;
+    --path-border: #e6ccaa;
+    --egg-pink: #FF6B8A;
+    --egg-green: #51CF66;
+    --egg-blue: #339AF0;
+    --egg-yellow: #FCC419;
+    --egg-purple: #CC5DE8;
+    --egg-orange: #FF922B;
+}
+
+html, body {
+    height: 100%;
+    height: 100dvh;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: linear-gradient(180deg, #87CEEB 0%, #B8E6FF 40%, #90EE90 60%, #228B22 100%);
+    touch-action: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+/* === SCREENS === */
+.screen {
+    position: fixed;
+    inset: 0;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    padding-top: env(safe-area-inset-top, 16px);
+    padding-bottom: env(safe-area-inset-bottom, 16px);
+}
+.screen.active {
+    display: flex;
+}
+
+/* === START SCREEN === */
+.title {
+    font-size: 32px;
+    font-weight: 800;
+    text-align: center;
+    color: #fff;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    line-height: 1.3;
+    margin-bottom: 16px;
+}
+
+.photo-frame {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 5px solid #fff;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    margin-bottom: 16px;
+    flex-shrink: 0;
+}
+.photo-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.photo-fallback {
+    display: none;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #ffd43b, #ff922b);
+    align-items: center;
+    justify-content: center;
+    font-size: 64px;
+}
+
+.subtitle {
+    font-size: 18px;
+    color: #fff;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+.btn-start {
+    font-size: 28px;
+    font-weight: 700;
+    padding: 16px 48px;
+    border: none;
+    border-radius: 50px;
+    background: linear-gradient(135deg, #FF6B8A, #FF922B);
+    color: #fff;
+    box-shadow: 0 6px 20px rgba(255,107,138,0.4);
+    cursor: pointer;
+    animation: pulse 2s ease-in-out infinite;
+}
+.btn-start:active {
+    transform: scale(0.95);
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* === GAME SCREEN === */
+#game-screen {
+    justify-content: flex-start;
+    padding-top: 8px;
+    gap: 6px;
+    background: linear-gradient(180deg, #87CEEB 0%, #a8d8ea 100%);
+}
+
+/* Letter bar */
+#letter-bar {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 4px 0;
+    flex-shrink: 0;
+}
+.letter-slot {
+    width: 44px;
+    height: 52px;
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: 800;
+    color: #fff;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    transition: transform 0.3s ease;
+    position: relative;
+    opacity: 0.4;
+}
+.letter-slot.collected {
+    opacity: 1;
+    animation: eggPop 0.5s ease;
+}
+.letter-slot .letter-text {
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+.letter-slot.collected .letter-text {
+    opacity: 1;
+}
+.letter-slot .question-mark {
+    position: absolute;
+    font-size: 18px;
+    transition: opacity 0.3s;
+}
+.letter-slot.collected .question-mark {
+    opacity: 0;
+}
+
+@keyframes eggPop {
+    0% { transform: scale(1); }
+    30% { transform: scale(1.4); }
+    60% { transform: scale(0.9); }
+    100% { transform: scale(1); }
+}
+
+/* Maze */
+#maze-wrapper {
+    position: relative;
+    flex-shrink: 0;
+}
+#maze {
+    display: grid;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+.cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.cell-wall {
+    background: var(--grass);
+    background-image:
+        radial-gradient(circle at 30% 40%, var(--grass-dark) 1px, transparent 1px),
+        radial-gradient(circle at 70% 60%, var(--grass-dark) 1px, transparent 1px);
+    background-size: 12px 12px;
+}
+.cell-path {
+    background: var(--path);
+    border: 1px solid var(--path-border);
+}
+.cell-finish {
+    background: var(--path);
+    border: 1px solid var(--path-border);
+}
+.cell-finish::after {
+    content: "\2B50";
+    font-size: calc(var(--cell) * 0.6);
+    animation: starPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes starPulse {
+    0%, 100% { transform: scale(1); opacity: 0.7; }
+    50% { transform: scale(1.2); opacity: 1; }
+}
+
+/* Eggs in maze */
+.egg {
+    position: absolute;
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(var(--cell) * 0.45);
+    font-weight: 800;
+    color: #fff;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+    transition: transform 0.3s, opacity 0.3s;
+    z-index: 5;
+    pointer-events: none;
+}
+.egg.collected {
+    transform: scale(0) rotate(180deg);
+    opacity: 0;
+}
+
+/* Player */
+#player {
+    position: absolute;
+    border-radius: 50%;
+    background: url(joshy.jpg) center/cover no-repeat, linear-gradient(135deg, #ffd43b, #ff922b);
+    border: 3px solid #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    z-index: 10;
+    transition: top 0.15s ease, left 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0;
+    color: transparent;
+    overflow: hidden;
+}
+#player.no-photo {
+    font-size: calc(var(--cell) * 0.6);
+    color: initial;
+    background: linear-gradient(135deg, #ffd43b, #ff922b);
+}
+
+/* Egg counter */
+#egg-count {
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    text-align: center;
+    flex-shrink: 0;
+}
+
+/* D-pad */
+#dpad {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+}
+.dpad-row {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+.dpad-spacer {
+    width: 56px;
+    height: 56px;
+}
+.dpad-btn {
+    width: 56px;
+    height: 56px;
+    border: none;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.85);
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    -webkit-tap-highlight-color: transparent;
+}
+.dpad-btn:active {
+    background: rgba(255,255,255,1);
+    transform: scale(0.9);
+}
+
+/* === WIN SCREEN === */
+#win-screen {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    overflow: hidden;
+}
+.win-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    z-index: 10;
+}
+.win-title {
+    font-size: 36px;
+    font-weight: 800;
+    color: #fff;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    text-align: center;
+}
+.win-word {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.win-letter {
+    width: 44px;
+    height: 52px;
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 800;
+    color: #fff;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    animation: winLetterPop 0.5s ease backwards;
+}
+.clue-text {
+    font-size: 22px;
+    font-weight: 700;
+    color: #ffd43b;
+    text-align: center;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+    padding: 12px 24px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 16px;
+    animation: fadeInUp 0.8s ease 0.5s backwards;
+}
+.win-emoji {
+    font-size: 32px;
+    letter-spacing: 8px;
+    animation: fadeInUp 0.8s ease 1s backwards;
+}
+
+@keyframes winLetterPop {
+    0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+    100% { transform: scale(1) rotate(0); opacity: 1; }
+}
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Confetti */
+#confetti {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 5;
+}
+.confetti-piece {
+    position: absolute;
+    top: -20px;
+    border-radius: 2px;
+    animation: confettiFall linear forwards;
+}
+@keyframes confettiFall {
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+}
