@@ -3,9 +3,9 @@
 // ============================================================
 // The word spelled out by collecting eggs in the maze.
 // Change this to any word — eggs auto-adjust to match!
-const EGG_WORD = 'CLOCK';
+const EGG_WORD = 'TIFFIN';
 // The full clue message shown on the win screen:
-const CLUE_MESSAGE = 'Look under the big clock for your next clue!';
+const CLUE_MESSAGE = 'Tiffin is carrying your next clue!';
 // ============================================================
 
 // Maze: 0=wall, 1=path
